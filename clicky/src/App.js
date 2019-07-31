@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import ChoiceCard from './components/ChoiceCard';
 import Wrapper from './components/Wrapper';
+import HUD from './components/HUD';
+import Container from './components/Container';
 import clickables from './clickables.json';
 
 class App extends Component {
 
     state = {
         clickables,
-        score: 0,
+        score: 0
     };
 
     clickDude = id => {
@@ -24,28 +26,38 @@ class App extends Component {
         }else{
             clickables[foundIndex].clicked = true;
             let newScore = this.state.score + 1
-            this.setState({clickables, newScore});
             console.log(clickables[foundIndex]);
+            this.shuffle(clickables)
+            this.setState({score:newScore, clickables});
+            
         }
 
         
     }
 
-
+    shuffle = array => {
+        for (let i = array.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+          [array[i], array[j]] = [array[j], array[i]]; // swap elements
+        }
+      }
     
 
     render() {
         return (
             <Wrapper>
-            {this.state.clickables.map(clickable => (
-              <ChoiceCard
-                clickDude ={this.clickDude}
-                resetGame={this.resetGame}
-                id={clickable.id}
-                image={clickable.image}
-                keygh={clickable.id}
-              />
-            ))}
+                <HUD score={this.state.score} />
+                <Container>
+                    {this.state.clickables.map(clickable => (
+                        <ChoiceCard
+                            clickDude={this.clickDude}
+                            resetGame={this.resetGame}
+                            id={clickable.id}
+                            image={clickable.image}
+                            key={clickable.id}
+                        />
+                    ))}
+                </Container>
             </Wrapper>
         );
     }
